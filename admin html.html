@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin - Markah Explorace</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f0f4f8;
+      color: #333;
+    }
+    header {
+      background: #4f46e5;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+    }
+    main {
+      padding: 2rem;
+      max-width: 800px;
+      margin: auto;
+      background: white;
+      border-radius: 1rem;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+    h2 {
+      margin-top: 0;
+    }
+    input, button, select {
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+    input {
+      width: calc(100% - 130px);
+    }
+    button {
+      background: #4f46e5;
+      color: white;
+      border: none;
+      margin-left: 0.5rem;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #4338ca;
+    }
+    .team-list {
+      margin-top: 2rem;
+    }
+    .team {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #f9fafb;
+      padding: 0.75rem 1rem;
+      margin-bottom: 0.5rem;
+      border-radius: 0.5rem;
+    }
+    .actions {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+    }
+    .actions span {
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Admin Panel - Sistem Markah Explorace</h1>
+  </header>
+  <main>
+    <h2>Tambah Kumpulan</h2>
+    <div style="display: flex; margin-bottom: 1rem;">
+      <input type="text" id="teamName" placeholder="Contoh: Alpha Fighters" />
+      <button onclick="addTeam()">Tambah</button>
+    </div>
+    <h2>Senarai Kumpulan</h2>
+    <div class="team-list" id="teamList"></div>
+  </main>
+  <script>
+    let teams = JSON.parse(localStorage.getItem('exploraceTeams')) || [];
+
+    function addTeam() {
+      const name = document.getElementById('teamName').value.trim();
+      if (!name) return;
+      const newTeam = {
+        name,
+        markah: {
+          s1: 0,
+          s2: 0,
+          s3: 0,
+          s4: 0,
+          s5: 0
+        }
+      };
+      teams.push(newTeam);
+      saveAndRender();
+      document.getElementById('teamName').value = '';
+    }
+
+    function deleteTeam(index) {
+      if (confirm(`Padam kumpulan: ${teams[index].name}?`)) {
+        teams.splice(index, 1);
+        saveAndRender();
+      }
+    }
+
+    function getTotalMarkah(team) {
+      return team.markah.s1 + team.markah.s2 + team.markah.s3 + team.markah.s4 + team.markah.s5;
+    }
+
+    function saveAndRender() {
+      localStorage.setItem('exploraceTeams', JSON.stringify(teams));
+      renderTeams();
+    }
+
+    function renderTeams() {
+      const container = document.getElementById('teamList');
+      container.innerHTML = '';
+      teams.forEach((team, index) => {
+        const div = document.createElement('div');
+        div.className = 'team';
+        const jumlah = getTotalMarkah(team);
+        div.innerHTML = `
+          <strong>${index + 1}. ${team.name}</strong>
+          <div class="actions">
+            <span>${jumlah} / 75</span>
+            <button onclick="deleteTeam(${index})">Padam</button>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    renderTeams();
+  </script>
+</body>
+</html>

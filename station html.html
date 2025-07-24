@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Stesen - Markah Explorace</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #e0f2f1;
+      color: #333;
+    }
+    header {
+      background: #00897b;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+    }
+    main {
+      padding: 2rem;
+      max-width: 800px;
+      margin: auto;
+      background: white;
+      border-radius: 1rem;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+    h2 {
+      margin-top: 0;
+    }
+    select, input, button {
+      padding: 0.5rem 1rem;
+      margin: 0.5rem 0;
+      font-size: 1rem;
+      border-radius: 0.5rem;
+      border: 1px solid #ccc;
+      width: 100%;
+    }
+    button {
+      background: #00897b;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #00695c;
+    }
+    .status {
+      margin-top: 1rem;
+      font-weight: bold;
+      color: green;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Panel Stesen - Sistem Markah Explorace</h1>
+  </header>
+  <main>
+    <h2>Kemaskini Markah</h2>
+    <label for="station">Stesen:</label>
+    <select id="station">
+      <option value="s1">Stesen 1</option>
+      <option value="s2">Stesen 2</option>
+      <option value="s3">Stesen 3</option>
+      <option value="s4">Stesen 4</option>
+      <option value="s5">Stesen 5</option>
+    </select>
+
+    <label for="team">Pilih Kumpulan:</label>
+    <select id="team"></select>
+
+    <label for="markah">Masukkan Markah (0-15):</label>
+    <input type="number" id="markah" min="0" max="15" />
+
+    <button onclick="updateMarkah()">Simpan Markah</button>
+
+    <div class="status" id="statusMsg"></div>
+  </main>
+
+  <script>
+    let teams = JSON.parse(localStorage.getItem('exploraceTeams')) || [];
+
+    function populateTeams() {
+      const teamSelect = document.getElementById('team');
+      teamSelect.innerHTML = '';
+      teams.forEach((team, index) => {
+        const option = document.createElement('option');
+        option.value = index;
+        option.textContent = team.name;
+        teamSelect.appendChild(option);
+      });
+    }
+
+    function updateMarkah() {
+      const station = document.getElementById('station').value;
+      const teamIndex = document.getElementById('team').value;
+      const markah = parseInt(document.getElementById('markah').value);
+
+      if (isNaN(markah) || markah < 0 || markah > 15) {
+        document.getElementById('statusMsg').textContent = 'Markah mesti antara 0 hingga 15';
+        document.getElementById('statusMsg').style.color = 'red';
+        return;
+      }
+
+      teams[teamIndex].markah[station] = markah;
+      localStorage.setItem('exploraceTeams', JSON.stringify(teams));
+      document.getElementById('statusMsg').textContent = 'Markah telah disimpan.';
+      document.getElementById('statusMsg').style.color = 'green';
+    }
+
+    populateTeams();
+  </script>
+</body>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Semakan Markah - Explorace</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #e0f2fe;
+      color: #333;
+    }
+    header {
+      background: #0284c7;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+    }
+    main {
+      padding: 2rem;
+      max-width: 600px;
+      margin: auto;
+      background: white;
+      border-radius: 1rem;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+    h2 {
+      margin-top: 0;
+    }
+    select {
+      width: 100%;
+      padding: 0.75rem;
+      font-size: 1rem;
+      border-radius: 0.5rem;
+      border: 1px solid #ccc;
+      margin-bottom: 1rem;
+    }
+    .result-box {
+      background: #f9fafb;
+      padding: 1rem;
+      border-radius: 0.75rem;
+      border: 1px solid #ddd;
+    }
+    .result-box p {
+      margin: 0.5rem 0;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Semakan Markah Explorace</h1>
+  </header>
+  <main>
+    <h2>Pilih Nama Kumpulan</h2>
+    <select id="teamSelect" onchange="updateDisplay()">
+      <option value="">-- Sila pilih --</option>
+    </select>
+    <div class="result-box" id="resultBox" style="display: none;">
+      <p><strong>Markah Stesen 1:</strong> <span id="s1"></span></p>
+      <p><strong>Markah Stesen 2:</strong> <span id="s2"></span></p>
+      <p><strong>Markah Stesen 3:</strong> <span id="s3"></span></p>
+      <p><strong>Markah Stesen 4:</strong> <span id="s4"></span></p>
+      <p><strong>Markah Stesen 5:</strong> <span id="s5"></span></p>
+      <hr />
+      <p><strong>Jumlah:</strong> <span id="jumlah"></span> / 75</p>
+    </div>
+  </main>
+  <script>
+    const teamSelect = document.getElementById('teamSelect');
+    const resultBox = document.getElementById('resultBox');
+
+    function updateDisplay() {
+      const index = teamSelect.value;
+      if (index === '') {
+        resultBox.style.display = 'none';
+        return;
+      }
+      const team = teams[index];
+      document.getElementById('s1').innerText = team.markah.s1;
+      document.getElementById('s2').innerText = team.markah.s2;
+      document.getElementById('s3').innerText = team.markah.s3;
+      document.getElementById('s4').innerText = team.markah.s4;
+      document.getElementById('s5').innerText = team.markah.s5;
+      const jumlah = team.markah.s1 + team.markah.s2 + team.markah.s3 + team.markah.s4 + team.markah.s5;
+      document.getElementById('jumlah').innerText = jumlah;
+      resultBox.style.display = 'block';
+    }
+
+    const teams = JSON.parse(localStorage.getItem('exploraceTeams')) || [];
+    teams.forEach((team, index) => {
+      const option = document.createElement('option');
+      option.value = index;
+      option.textContent = team.name;
+      teamSelect.appendChild(option);
+    });
+  </script>
+</body>
+</html>
